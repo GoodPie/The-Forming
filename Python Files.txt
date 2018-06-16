@@ -1,6 +1,0 @@
-main.py			  The main loop for the game
-tilemap.py 		  The tile maps for each level
-spaceReplace.py		  Removes spaces from a tilemap list [REMOVED, now for personal use]
-functions.py		  Non game functions
-EntityClasses.py	  All the entity classes
-
