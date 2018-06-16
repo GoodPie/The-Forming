@@ -14,13 +14,6 @@ def take_screen_shot(screen):
     print("A screen shot has been taken and saved as: " + save_file)
 
 
-# This is a test to load images into a dictionary for faster loading
-def get_image(key, cache):
-    if not key in cache:
-        cache[key] = pygame.image.load(key).convert_alpha()
-    return cache[key]
-
-
 def currentLevelChecker(area="generation"):
     return area
 

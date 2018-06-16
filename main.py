@@ -2,9 +2,16 @@
 # Created and maintained by Brandyn Britton
 
 
-import glob
-
 import tilemap
+from Character import Character
+from ImageCache import ImageCache
+from Tiles.Foundation import Foundation
+from Tiles.Grass import Grass
+from Tiles.Path import Path
+from Tiles.Planks import Planks
+from Tiles.Sand import Sand
+from Tiles.Tree import Tree
+from Tiles.Water import Water
 from functions import *
 
 # Screen Settings and variables
@@ -39,18 +46,15 @@ fps = 60
 
 # loading all variables and what not to prepare the game#
 def main():
-    global screen, trees, obsticles, grass, buildables, clock, level, image_cache, camera, background_entities, player_entities, player, map_entities
+    global tile_cache, screen, trees, obsticles, grass, buildables, clock, level, image_cache, camera, background_entities, player_entities, player, map_entities
 
     # Initiating everything needed for the game
     pygame.init()
     screen = pygame.display.set_mode(windowSize)
     clock = pygame.time.Clock()
 
-    image_cache = {}
-    all_images = glob.glob("data/images/*.png")
-    print("All Images Loaded!")
-    for image in all_images:
-        get_image(image, image_cache)
+    image_cache = ImageCache("data/images/")
+    tile_cache = ImageCache("data/images/tiles/")
 
     # Creating Entity Groups
     background_entities = pygame.sprite.Group()  # The background image entities
@@ -61,7 +65,9 @@ def main():
     grass = []  # Gets all the grass and sand and st00f
     buildables = []  # blocks that are buidable on
 
-    player = Player(32, 32, image_cache)
+    # Create the player
+    # TODO: Create separate class when we have more functionality
+    player = Character(32, 32, "data/images/player/", 32, 32)
     player_entities.add(player)
 
     # Initiating constants for the game
@@ -92,7 +98,7 @@ def main_game_loop(level, obsticles, player):
     back_x = back_y = 0
     for back_row in level:
         for back_col in back_row:
-            Draw_Level(back_x, back_y, back_col, obsticles, background_entities, image_cache)
+            draw_level(back_x, back_y, back_col, obsticles, background_entities, tile_cache)
             back_x += 32
         back_y += 32
         back_x = 0
@@ -106,7 +112,7 @@ def main_game_loop(level, obsticles, player):
     inv_x = inv_y = 0
     for inv_row in invent_layout:
         for inv_col in inv_row:
-            Draw_Level(inv_x, inv_y, inv_col, obsticles, inventory_entities, image_cache)
+            draw_level(inv_x, inv_y, inv_col, obsticles, inventory_entities, tile_cache)
             inv_x += 32
         inv_y += 32
         inv_x = 0
@@ -115,7 +121,7 @@ def main_game_loop(level, obsticles, player):
     walking = False
 
     # Inventory Image (when q is pressed)
-    inv_image = get_image("data/images/Inventory.png", image_cache)
+    inv_image = image_cache.get_image("inventory")
     inventory_show = False
     selected_block = ""
 
@@ -162,13 +168,13 @@ def main_game_loop(level, obsticles, player):
             if event.type == KEYDOWN:
 
                 if event.key == K_UP or event.key == K_w:
-                    up = True
+                    up = 1
                 elif event.key == K_DOWN or event.key == K_s:
-                    down = True
+                    down = 1
                 elif event.key == K_LEFT or event.key == K_a:
-                    left = True
+                    left = 1
                 elif event.key == K_RIGHT or event.key == K_d:
-                    right = True
+                    right = 1
                 elif event.key == K_F1:
                     take_screen_shot(screen)
                 elif event.key == K_F2:
@@ -183,13 +189,13 @@ def main_game_loop(level, obsticles, player):
             # All keyup events (keys popup on keyboard...)#
             if event.type == KEYUP:
                 if event.key == K_UP or event.key == K_w:
-                    up = False
+                    up = 0
                 elif event.key == K_DOWN or event.key == K_s:
-                    down = False
+                    down = 0
                 elif event.key == K_LEFT or event.key == K_a:
-                    left = False
+                    left = 0
                 elif event.key == K_RIGHT or event.key == K_d:
-                    right = False
+                    right = 0
 
                 elif event.key == K_p:
                     position_check = False
@@ -210,9 +216,7 @@ def main_game_loop(level, obsticles, player):
 
         # Updating the player
         camera.update(player)
-        player.update(up, down, left, right, position_check, obsticles, trees,
-                      total_level_width, total_level_height)
-        walking = player.Walking_Animation(walking, up, down, left, right)
+        player.update(up, down, left, right, None)
 
         # Drawing each entity to the screen
         for be in background_entities:
@@ -257,13 +261,13 @@ def start_menu():
     start_game = False
 
     # Setting up images for start menu
-    new_game = New_Game(half_width, half_height - 50, image_cache)
-    quit_game = Quit_Game(half_width, half_height + 10, image_cache)
+    new_game = NewGame(half_width, half_height - 50, image_cache)
+    quit_game = QuitGame(half_width, half_height + 10, image_cache)
 
     # Getting all the necessary images
-    background = get_image("data/images/Menu_Background.png", image_cache)
+    background = image_cache.get_image("menu_bg")
     screen.blit(background, (0, 0))
-    made_by = get_image("data/images/Credits.png", image_cache)
+    made_by = image_cache.get_image("credits")
     screen.blit(made_by, (20, window_height - 50))
 
     # Setting up button entities
@@ -304,61 +308,43 @@ def start_menu():
 
 
 # This passes all the entities to the game for drawing
-def Draw_Level(x, y, column, obsticles, entities, image_cache):
-    # Grass#
-    if column == "G":
-        g = Grass(x, y, image_cache)
-        entities.add(g)
-        grass.append(g)
-    # Plain Grass#
-    elif column == "P":
-        p = Plain_Grass(x, y, image_cache)
-        entities.add(p)
-        grass.append(p)
-    # Grass with yellow flower#
-    elif column == "F":
-        f = Grass_Flower(x, y, image_cache)
-        entities.add(f)
-        grass.append(f)
-    # Grass To Sand (50/50 split block) Direct#
-    elif column == "Y":
-        q = Grass_To_SandD(x, y, image_cache)
-        entities.add(q)
-        grass.append(q)
-    # Tree#
+def draw_level(x, y, column, obstacles, entities, tile_cache):
+    tile = None
+
+    if column in ('G', 'P', 'F', 'Y'):
+        tile = Grass(x, y, tile_cache.get_image("grass_01"))
+        grass.append(tile)
     elif column == "T":
-        t = Tree(x, y, image_cache)
-        trees.append(t)
-        entities.add(t)
+        tile = Tree(x, y, tile_cache.get_image("tree_01"))
+        trees.append(tile)
     # Path#
     elif column == "O":
-        o = Path(x, y, image_cache)
-        entities.add(o)
-        grass.append(o)
+        tile = Path(x, y, tile_cache.get_image("path"))
+        grass.append(tile)
     # Sand#
     elif column == "S":
-        s = Sand(x, y, image_cache)
-        entities.add(s)
-        grass.append(s)
+        tile = Sand(x, y, tile_cache.get_image("sand_01"))
+        grass.append(tile)
     # Sand To Water (50/50 split block) Direct#
     elif column == "Q":
-        q = Sand_To_Water(x, y, image_cache)
-        entities.add(q)
+        tile = Sand(x, y, tile_cache.get_image("sand_water"))
     # Water#
     elif column == "W":
-        w = Water(x, y, image_cache)
-        obsticles.append(w)
-        entities.add(w)
+        tile = Water(x, y, tile_cache.get_image("water"))
+        obstacles.append(tile)
     # Dead Branch In Sand#
     elif column == "D":
-        d = Sand_Dead(x, y, image_cache)
-        entities.add(d)
-        grass.append(d)
+        tile = Sand(x, y, tile_cache.get_image("sand_dec_01"))
+        grass.append(tile)
     elif column == "L":
-        l = Planks(x, y, image_cache)
-        obsticles.append(l)
-        entities.add(l)
-        grass.append(l)
+        tile = Planks(x, y, tile_cache.get_image("planks"))
+        obstacles.append(tile)
+        grass.append(tile)
+    else:
+        print("Failed to find tile " + column)
+
+    if tile is not None:
+        entities.add(tile)
 
 
 # Camera function
@@ -378,10 +364,9 @@ def main_camera(camera, target_rect):
 def replace_block(mouse_pos):
     # Checks if the entity is classed as a grass block
     for g in grass:
-        rect = g.get_rect()
+        rect = g.rect
         if rect.collidepoint(mouse_pos[0], mouse_pos[1]):
-            print("A block has been clicked")
-            new_image = Dug_Out(g.rect[0], g.rect[1], image_cache)
+            new_image = Foundation(g.rect[0], g.rect[1], tile_cache.get_image("foundation"))
             grass.remove(g)
             background_entities.remove(g)
             try:
@@ -395,10 +380,10 @@ def replace_block(mouse_pos):
 
     # checks if the entity is classed as a tree (for collisions and replacing)
     for t in trees:
-        rect = t.get_rect()
+        rect = t.rect
         if rect.collidepoint(mouse_pos[0], mouse_pos[1]):
             print("Tree has been clicked")
-            new_image = Grass(t.rect[0], t.rect[1], image_cache)
+            new_image = Grass(t.rect[0], t.rect[1], tile_cache.get_image("grass_02"))
             background_entities.remove(t)
             trees.remove(t)
             grass.append(new_image)
@@ -408,7 +393,7 @@ def replace_block(mouse_pos):
 # This checks what item has been clicked in the inventory
 def check_click_inv(mouse_pos, invList, placed):
     for inv in invList:
-        rect = inv.get_rect()
+        rect = inv.rect
         if rect.collidepoint(mouse_pos[0], mouse_pos[1]):
             return inv.name
 
@@ -417,7 +402,7 @@ def check_click_inv(mouse_pos, invList, placed):
 def place_block(mouse_pos, selected_block):
     # This ensures blocks can only be placed on the "cement" or dug out blocks
     for b in buildables:
-        rect = b.get_rect()
+        rect = b.rect
         # Checking collide points between mouse and buildables
         if rect.collidepoint(mouse_pos[0], mouse_pos[1]):
             print("You can build on this block")

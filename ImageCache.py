@@ -5,17 +5,20 @@ import pygame
 
 class ImageCache:
 
-    def __init__(self):
+    def __init__(self, directory, img_type='png'):
 
         self.cache = {}
+        self.directory = directory
+        self.img_type = img_type
+        self.add_dir(directory)
 
-    def add_dir(self, directory, img_type):
+    def add_dir(self, directory):
         """
         Adds an entire directory of images to the image cache
         :param directory:   Directory to look for images
         :param img_type:    The type of image to add (ie: png)
         """
-        images = glob.glob(directory + "*." + img_type)
+        images = glob.glob(directory + "*." + self.img_type)
         for image in images:
             self.add_image(image)
 
@@ -33,5 +36,6 @@ class ImageCache:
         :param key:     Image to add, using the image name as a key
         :return:        Image
         """
-        self.add_image(key)
-        return self.cache[key]
+        actual_key = self.directory + key + "." + self.img_type
+        self.add_image(actual_key)
+        return self.cache[actual_key]
