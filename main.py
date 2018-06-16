@@ -3,9 +3,8 @@
 
 
 import glob
-import tilemap
 
-from EntityClasses import *
+import tilemap
 from functions import *
 
 # Screen Settings and variables

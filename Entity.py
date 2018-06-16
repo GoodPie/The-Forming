@@ -1,7 +1,9 @@
-import functions
-import pygame
 import sys
+
+import pygame
 from pygame.locals import *
+
+import functions
 
 
 # Main Entity Class
