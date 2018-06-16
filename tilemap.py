@@ -81,7 +81,7 @@ def tileMapGeneration():
 
     waterAmount = random.randint(1,20)
 
-    print biome
+    print(biome)
     while len(tilemap) != 100:
         structure = random.randint(1,10)
         if biome != "desert":
