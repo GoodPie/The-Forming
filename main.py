@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# Created and maintained by Brandyn Britton
 
 
 import tilemap
@@ -44,7 +43,7 @@ blue = [000, 000, 255]
 fps = 60
 
 
-# loading all variables and what not to prepare the game#
+# loading all variables and what not to prepare the game
 def main():
     global tile_cache, screen, trees, obsticles, grass, buildables, clock, level, image_cache, camera, background_entities, player_entities, player, map_entities
 
@@ -72,7 +71,7 @@ def main():
 
     # Initiating constants for the game
     current_level = currentLevelChecker()
-    level = tilemap.Checker(current_level)
+    level = tilemap.get_level(current_level)
 
     # This is the main process of the game (order of events that usually take place)
     start_menu()
