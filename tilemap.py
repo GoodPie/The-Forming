@@ -1,6 +1,6 @@
-#This is the map layout folder. Feel free to edit it to your hearts desire,
-#just be careful not to destroy the entire game (your loss not mine). Also,
-#Feel free to change the textures...
+# This is the map layout folder. Feel free to edit it to your hearts desire,
+# just be careful not to destroy the entire game (your loss not mine). Also,
+# Feel free to change the textures...
 
 import random
 
@@ -26,52 +26,51 @@ import random
 	D = Sand (Dead)
 """
 
-def Checker(area="generation"):
+
+def get_level(area="generation"):
     if area == "testPlace":
-        level = testPlace()
+        level = get_test_level()
     elif area == "generation":
-        level = tileMapGeneration()
+        level = generate()
 
     return level
 
 
-def testPlace():
+def get_test_level():
+    # This is where all the testing happens...
 
-    #This is where all the testing happens...
-    
     tilemap = [
-            'TTTTTTTTTTTTTTTTTTTTTTTTTT',
-            'TGFGGGGPPFPGGGGGGGGGGGGGGT',
-            'TGGGGGGGFGPGGGGGGGGGGGGGGT',
-            'TGGGGGGGGFPFFGFGGGGGGGGGGT',
-            'OOOOOOOOOOOOOOOOOOOOOOOOOO',
-            'OOOOOOOOOOOOOOOOOOOOOOOOOO',
-            'GGFGGGGGGOOFGGGGGGGGGGGGGG',
-            'FGFTGGGGTOOFGGGGGGGGGGGGGG',
-            'TGGGGGGGGOOTGGGGFGPGGGGGGG',
-            'GGGTFGGGGOOGGGGGGGTGGGGGGG',
-            'GGGGGGGGGGGGGFGGGTGGGGGGGG',
-            'YYYYYYYYYYYYYYYYYYYYYYYYYY',
-            'SSSSSSSSSSSSSSSSSSSSSSSSSS',
-            'SSSSSSSSSSSSSSSSSSSSSSSSSS',
-            'SSSSSSSSSSSSSSSSSSSSSSSSSS',
-            'QQQQQQQQQQQQQQQQQQQQQQQQQQ',
-            'WWWWWWWWWWWWWWWWWWWWWWWWWW',
-            'WWWWWWWWWWWWWWWWWWWWWWWWWW',
-            'WWWWWWWWWWWWWWWWWWWWWWWWWW',
-            'WWWWWWWWWWWWWWWWWWWWWWWWWW',
-            'WWWWWWWWWWWWWWWWWWWWWWWWWW',
-]
+        'TTTTTTTTTTTTTTTTTTTTTTTTTT',
+        'TGFGGGGPPFPGGGGGGGGGGGGGGT',
+        'TGGGGGGGFGPGGGGGGGGGGGGGGT',
+        'TGGGGGGGGFPFFGFGGGGGGGGGGT',
+        'OOOOOOOOOOOOOOOOOOOOOOOOOO',
+        'OOOOOOOOOOOOOOOOOOOOOOOOOO',
+        'GGFGGGGGGOOFGGGGGGGGGGGGGG',
+        'FGFTGGGGTOOFGGGGGGGGGGGGGG',
+        'TGGGGGGGGOOTGGGGFGPGGGGGGG',
+        'GGGTFGGGGOOGGGGGGGTGGGGGGG',
+        'GGGGGGGGGGGGGFGGGTGGGGGGGG',
+        'YYYYYYYYYYYYYYYYYYYYYYYYYY',
+        'SSSSSSSSSSSSSSSSSSSSSSSSSS',
+        'SSSSSSSSSSSSSSSSSSSSSSSSSS',
+        'SSSSSSSSSSSSSSSSSSSSSSSSSS',
+        'QQQQQQQQQQQQQQQQQQQQQQQQQQ',
+        'WWWWWWWWWWWWWWWWWWWWWWWWWW',
+        'WWWWWWWWWWWWWWWWWWWWWWWWWW',
+        'WWWWWWWWWWWWWWWWWWWWWWWWWW',
+        'WWWWWWWWWWWWWWWWWWWWWWWWWW',
+        'WWWWWWWWWWWWWWWWWWWWWWWWWW',
+    ]
 
     return tilemap
 
 
-def tileMapGeneration():
-
+def generate():
     tilemap = []
     levelString = ""
 
-    biome = random.randint(1,3)
+    biome = random.randint(1, 3)
     if biome == 1:
         biome = "forest"
     if biome == 2:
@@ -79,11 +78,11 @@ def tileMapGeneration():
     if biome == 3:
         biome = "desert"
 
-    waterAmount = random.randint(1,20)
+    waterAmount = random.randint(1, 20)
 
     print(biome)
     while len(tilemap) != 100:
-        structure = random.randint(1,10)
+        structure = random.randint(1, 10)
         if biome != "desert":
             if biome == "plains" and (structure == 1 or
                                       structure == 6 or
@@ -91,10 +90,10 @@ def tileMapGeneration():
                                       structure == 8 or
                                       structure == 9 or
                                       structure == 10):
-                    levelString += "G"
+                levelString += "G"
             elif biome != "plains" and structure == 1:
                 levelString += "G"
-            
+
         if biome != "desert":
             if biome == "forest" and (structure == 2 or
                                       structure == 6 or
@@ -102,17 +101,17 @@ def tileMapGeneration():
                                       structure == 8 or
                                       structure == 9 or
                                       structure == 10):
-                    levelString += "T"
+                levelString += "T"
             elif biome != "forest" and structure == 2:
                 levelString += "T"
 
         if biome == "desert" and (structure == 3 or
-                                   structure == 6 or
-                                   structure == 7 or
-                                   structure == 8 or
-                                   structure == 9 or
-                                   structure == 10):
-            randomSand = random.randint(1,1000)
+                                  structure == 6 or
+                                  structure == 7 or
+                                  structure == 8 or
+                                  structure == 9 or
+                                  structure == 10):
+            randomSand = random.randint(1, 1000)
             if randomSand < 990:
                 levelString += "S"
             elif randomSand == 991 and waterAmount > 0:
@@ -126,11 +125,9 @@ def tileMapGeneration():
         if biome != "desert":
             if structure == 5:
                 levelString += "F"
-            
+
         if len(levelString) == 100:
             tilemap.append(levelString)
             levelString = ""
 
     return tilemap
-        
-            
