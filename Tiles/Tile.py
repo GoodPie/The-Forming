@@ -12,5 +12,11 @@ class Tile(Entity):
         self.rect = Rect(x, y, width, height)
 
     def hit_test(self, x, y):
+        """
+        Determines if the current x and y coordinates are within the tiles rect
+        :param x:
+        :param y:
+        :return:    x and y inside the current tile?
+        """
         return (self.rect.x <= x < self.rect.x + self.rect.width and
                 self.rect.y <= y < self.rect.y + self.rect.height)
