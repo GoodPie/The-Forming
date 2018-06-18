@@ -2,7 +2,7 @@
 
 
 import tilemap
-from Character import Character
+from Characters.Character import Character
 from ImageCache import ImageCache
 from Tiles.Foundation import Foundation
 from Tiles.Grass import Grass
@@ -57,7 +57,7 @@ def main():
 
     # Creating Entity Groups
     background_entities = pygame.sprite.Group()  # The background image entities
-    player_entities = pygame.sprite.Group()  # Holds NPC's and Player
+    player_entities = pygame.sprite.Group()  # Holds NPC's and Player.py
     map_entities = pygame.sprite.Group()  # Holds minimap entities
     obsticles = []  # Everything the player stops at...
     trees = []  # Gets all the trees
@@ -66,7 +66,7 @@ def main():
 
     # Create the player
     # TODO: Create separate class when we have more functionality
-    player = Character(32, 32, "data/images/player/", 32, 32)
+    player = Character(32, 32, "data/images/player/", 32, 32, 2)
     player_entities.add(player)
 
     # Initiating constants for the game
@@ -346,17 +346,7 @@ def draw_level(x, y, column, obstacles, entities, tile_cache):
         entities.add(tile)
 
 
-# Camera function
-def main_camera(camera, target_rect):
-    l, t, _, _ = target_rect
-    _, _, w, h = camera
-    l, t, _, _ = -l + half_width, -t + half_height, w, h
 
-    l = min(0, l)
-    l = max(-(camera.width - window_width), l)
-    t = max(-(camera.height - window_height), t)
-    t = min(0, t)
-    return Rect(l, t, w, h)
 
 
 # This replaces the blocks with "buildable" blocks

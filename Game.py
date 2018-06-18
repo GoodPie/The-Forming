@@ -1,6 +1,10 @@
 import pygame
 
+from Camera import Camera, main_camera
+from Characters.Player import Player
+from Cursor import Cursor
 from ImageCache import ImageCache
+from Level import Level
 from UI.Button import Button
 
 
@@ -38,14 +42,8 @@ class Game:
         self.tile_cache = ImageCache(Game.tile_dir)
         self.ui_cache = ImageCache(Game.ui_dir)
 
-        # Create different sprite groups and default to None until we start the main game loop
-        self.collidable_entities = None
-        self.built_entities = None
-        self.character_entities = None
-
         # Define the key entities and default to None until we start the main game loop
         self.player = None
-        self.level = None
 
     def main_menu_loop(self):
         start_game = False
@@ -96,6 +94,82 @@ class Game:
             button_entities.draw(self.screen)
 
             pygame.display.flip()
+
+        self.main_game_loop()
+
+    def main_game_loop(self):
+
+        # Define the entity groups
+        character_entities = pygame.sprite.Group()  # All character entities (including Player.py)
+        built_entities = pygame.sprite.Group()  # Anything the player has built
+
+        # Build the level
+        level = Level()
+        level.generate(self.tile_cache)
+
+        # Create the player
+        player_sprites = "data/images/player/"
+        camera = Camera(main_camera, level.width * self.tile_size, level.height * self.tile_size,
+                        self.window_width, self.window_height)
+        self.player = Player(32, 32, player_sprites, self.tile_size, self.tile_size, 2, camera)
+        character_entities.add(self.player)
+
+        # Create cursor entity for better collisions
+        cursor = Cursor()
+
+        game_running = True
+
+        up, down, left, right = 0, 0, 0, 0
+
+        while game_running:
+
+            # Reset game variables
+            mouse_clicked = False
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    quit_game()
+
+                # Key down events
+                if event.type == pygame.KEYDOWN:
+
+                    if event.key in (pygame.K_UP, pygame.K_w):
+                        up = 1
+                    if event.key in (pygame.K_DOWN, pygame.K_s):
+                        down = 1
+                    if event.key in (pygame.K_LEFT, pygame.K_a):
+                        left = 1
+                    if event.key in (pygame.K_RIGHT, pygame.K_d):
+                        right = 1
+
+                # Key up events
+                if event.type == pygame.KEYUP:
+
+                    if event.key in (pygame.K_UP, pygame.K_w):
+                        up = 0
+                    if event.key in (pygame.K_DOWN, pygame.K_s):
+                        down = 0
+                    if event.key in (pygame.K_LEFT, pygame.K_a):
+                        left = 0
+                    if event.key in (pygame.K_RIGHT, pygame.K_d):
+                        right = 0
+
+            cursor.update()
+
+            for tile in level.terrain:
+                self.screen.blit(tile.image, self.player.camera.apply(tile))
+
+            for tile in level.obstacles:
+                self.screen.blit(tile.image, self.player.camera.apply(tile))
+
+            for character in character_entities:
+                self.screen.blit(character.image, self.player.camera.apply(character))
+
+            self.player.update(up, down, left, right, level.obstacles)
+
+            pygame.display.flip()
+
+        self.main_menu_loop()
 
     def get_half_width(self):
         return self.window_width / 2
