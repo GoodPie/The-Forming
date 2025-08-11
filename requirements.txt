@@ -1,0 +1,5 @@
+# This file lists the project's Python dependencies.
+# For more information on requirements files, see:
+# https://pip.pypa.io/en/stable/reference/requirements-file-format/
+
+pygame
