@@ -3,6 +3,7 @@ import sys
 
 import pygame
 
+from the_forming import config
 from the_forming.camera import Camera, main_camera
 from the_forming.characters.player import Player
 from the_forming.cursor import Cursor
@@ -24,18 +25,20 @@ def quit_game():
 
 class Game:
     """Entry point for running the menu and main game loop."""
-    tile_dir = "data/images/tiles/"
-    ui_dir = "data/images/ui/"
+    tile_dir = config.TILE_DIR
+    ui_dir = config.UI_DIR
 
     def __init__(self):
         """Initialize pygame, window, caches, and default state."""
 
         # Define window properties
-        self.window_size = self.window_width, self.window_height = 640, 640
-        self.tile_size = 32
-        self.depth = 0
-        self.flags = 0
-        self.fps = 60
+        self.window_width = config.WINDOW_WIDTH
+        self.window_height = config.WINDOW_HEIGHT
+        self.window_size = config.WINDOW_SIZE
+        self.tile_size = config.TILE_SIZE
+        self.depth = config.DEPTH
+        self.flags = config.FLAGS
+        self.fps = config.FPS
 
         # Initialize pygame
         pygame.init()
@@ -115,10 +118,11 @@ class Game:
         level.generate(self.tile_cache)
 
         # Create the player
-        player_sprites = "data/images/player/"
+        player_sprites = config.PLAYER_SPRITES_DIR
         camera = Camera(main_camera, level.width * self.tile_size, level.height * self.tile_size,
                         self.window_width, self.window_height)
-        self.player = Player(32, 32, player_sprites, self.tile_size, self.tile_size, 2, camera)
+        self.player = Player(config.TILE_SIZE, config.TILE_SIZE, player_sprites, self.tile_size, self.tile_size, 2,
+                             camera)
         character_entities.add(self.player)
 
         # Create cursor entity for better collisions
