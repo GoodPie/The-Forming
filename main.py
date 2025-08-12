@@ -1,27 +1,34 @@
+"""Main game loop and menu for The Forming."""
+import sys
+
 import pygame
 
-from Level import Level
 from the_forming.camera import Camera, main_camera
 from the_forming.characters.player import Player
 from the_forming.cursor import Cursor
 from the_forming.image_cache import ImageCache
+from the_forming.level_generation.level_generation import Level
 from the_forming.ui.button import Button
 
 
 def start_game_cb():
+    """Callback indicating a new game should start."""
     return True
 
 def quit_game():
+    """Quit pygame and terminate the program."""
     print("User quit game")
     pygame.quit()
-    exit()
+    sys.exit()
 
 
 class Game:
+    """Entry point for running the menu and main game loop."""
     tile_dir = "data/images/tiles/"
     ui_dir = "data/images/ui/"
 
     def __init__(self):
+        """Initialize pygame, window, caches, and default state."""
 
         # Define window properties
         self.window_size = self.window_width, self.window_height = 640, 640
@@ -45,6 +52,7 @@ class Game:
         self.player = None
 
     def main_menu_loop(self):
+        """Display and run the main menu until the user clicks New Game or Quit."""
         start_game = False
 
         # Create buttons with the static callback functions
@@ -87,7 +95,7 @@ class Game:
                     pass
 
             # Update the buttons. Start game will return True if clicked, exiting the menu loop
-            start_game = new_game_button.update(pygame.mouse.get_pos(), mouse_clicked)
+            new_game_button.update(pygame.mouse.get_pos(), mouse_clicked)
             quit_button.update(pygame.mouse.get_pos(), mouse_clicked)
 
             button_entities.draw(self.screen)
@@ -97,10 +105,10 @@ class Game:
         self.main_game_loop()
 
     def main_game_loop(self):
+        """Run the main gameplay loop until termination."""
 
         # Define the entity groups
         character_entities = pygame.sprite.Group()  # All character entities (including Player.py)
-        built_entities = pygame.sprite.Group()  # Anything the player has built
 
         # Build the level
         level = Level()
@@ -123,7 +131,6 @@ class Game:
         while game_running:
 
             # Reset game variables
-            mouse_clicked = False
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -171,9 +178,11 @@ class Game:
         self.main_menu_loop()
 
     def get_half_width(self):
+        """Return half of the window width."""
         return self.window_width / 2
 
     def get_half_height(self):
+        """Return half of the window height."""
         return self.window_height / 2
 
 

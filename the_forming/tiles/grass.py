@@ -2,6 +2,8 @@
 
 from typing import TYPE_CHECKING
 
+from pygame import Surface
+
 from the_forming.tiles.tile import Tile
 
 __all__ = ["Grass"]
@@ -13,7 +15,7 @@ if TYPE_CHECKING:
 class Grass(Tile):
     """A simple grass tile."""
 
-    def __init__(self, x: int, y: int, img: "pygame.Surface") -> None:
+    def __init__(self, x: int, y: int, img: Surface) -> None:
         """Initialize a grass tile at the given coordinates with an image.
 
         Args:
