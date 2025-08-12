@@ -1,0 +1,15 @@
+[MASTER]
+extension-pkg-allow-list=pygame
+extension-pkg-whitelist=pygame
+
+[TYPECHECK]
+# Helps with C-extension modules like pygame where members are dynamically provided
+generated-members=pygame.*,pygame.event.*,pygame.display.*,pygame.time.*
+
+[FORMAT]
+max-line-length=100
+
+[MESSAGES CONTROL]
+# Keep most messages enabled to "explore" findings; we only address false positives
+# by whitelisting pygame above.
+# You may optionally disable specific categories later if desired.
