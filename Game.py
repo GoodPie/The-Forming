@@ -1,16 +1,15 @@
 import pygame
 
-from Camera import Camera, main_camera
-from Characters.Player import Player
-from Cursor import Cursor
-from ImageCache import ImageCache
 from Level import Level
-from UI.Button import Button
+from the_forming.camera import Camera, main_camera
+from the_forming.characters.player import Player
+from the_forming.cursor import Cursor
+from the_forming.image_cache import ImageCache
+from the_forming.ui.button import Button
 
 
 def start_game_cb():
     return True
-
 
 def quit_game():
     print("User quit game")

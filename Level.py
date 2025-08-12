@@ -2,9 +2,9 @@ import random
 
 import pygame
 
-from Tiles.Grass import Grass
-from Tiles.Sand import Sand
-from Tiles.Water import Water
+from the_forming.tiles.grass import Grass
+from the_forming.tiles.sand import Sand
+from the_forming.tiles.water import Water
 
 
 def clamp(value, a, b):
