@@ -1,7 +1,9 @@
+"""Camera logic and utilities."""
 from pygame.rect import Rect
 
 
 # Camera function
+
 def main_camera(camera, target_rect, window_width, window_height):
     l, t, _, _ = target_rect
     _, _, w, h = camera
@@ -14,7 +16,8 @@ def main_camera(camera, target_rect, window_width, window_height):
     return Rect(l, t, w, h)
 
 
-class Camera(object):
+class Camera:
+    """2D camera for tracking and transforming world coordinates."""
 
     def __init__(self, camera_func, width, height, window_width, window_height):
         self.window_width = window_width

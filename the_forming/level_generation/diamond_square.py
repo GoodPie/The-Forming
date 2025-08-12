@@ -1,53 +1,6 @@
 import random
 
-import pygame
-
-from Tiles.Grass import Grass
-from Tiles.Sand import Sand
-from Tiles.Water import Water
-
-
-def clamp(value, a, b):
-    if value < a:
-        value = a
-    elif value > b:
-        value = b
-
-    return value
-
-
-class Level:
-
-    def __init__(self, width=200, height=200, roughness=0.2):
-        self.width = width
-        self.height = height
-        self.map = DiamondSquare(8, roughness)
-        self.terrain = pygame.sprite.Group()
-        self.obstacles = pygame.sprite.Group()
-        self.level = []
-
-    def generate(self, tile_cache):
-        grid = self.map.get_grid_2D()
-
-        # TODO: Add more tiles and depth to the level
-        for y in range(len(grid)):
-            for x in range(len(grid)):
-                val = grid[x][y]
-                if val <= 0.1:
-                    # Water
-                    self.level.append('W')
-                    water_img = tile_cache.get_image("water")
-                    self.obstacles.add(Water(x * 32, y * 32, water_img))
-                elif 0.1 < val < 0.2:
-                    # Sand
-                    sand_img = tile_cache.get_image("sand_01")
-                    self.terrain.add(Sand(x * 32, y * 32, sand_img))
-                    self.level.append('S')
-                else:
-                    # Grass
-                    grass_img = tile_cache.get_image("grass_01")
-                    self.terrain.add(Grass(x * 32, y * 32, grass_img))
-                    self.level.append('G')
+from the_forming.level_generation.utilities import clamp
 
 
 class DiamondSquare:
@@ -67,7 +20,7 @@ class DiamondSquare:
 
     # Sets x,y position in self.grid
     def set(self, x, y, val):
-        self.grid[x + self.size * y] = val;
+        self.grid[x + self.size * y] = val
 
     # Get's value of x, y in self.grid
     def get(self, x, y):
@@ -79,9 +32,6 @@ class DiamondSquare:
 
     # Main iteration
     def divide(self, size):
-
-        x = int(size / 2)
-        y = int(size / 2)
         half = int(size / 2)
         scale = int(self.roughness * size)
 

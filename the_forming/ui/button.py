@@ -1,10 +1,11 @@
-from Entity import Entity, Rect
+from pygame.rect import Rect
+
+from the_forming.entity import Entity
 
 
 class Button(Entity):
-
     def __init__(self, x, y, img, img_hover, width, height, callback):
-        Entity.__init__(self)
+        super().__init__()
         self.image_norm = img
         self.image_hover = img_hover
         self.image = self.image_norm

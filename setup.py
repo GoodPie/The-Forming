@@ -1,3 +1,3 @@
 from distutils.core import setup
 
-setup(console=['Game.py'])
+setup(console=['main.py'])

@@ -1,17 +1,14 @@
 from pygame.rect import Rect
 
-from Entity import Entity
-from ImageCache import ImageCache
+from the_forming.entity import Entity
+from the_forming.image_cache import ImageCache
 
 
 class Character(Entity):
-
     def __init__(self, start_x, start_y, sprite_dir, width, height, frames, cache=None):
-        Entity.__init__(self)
+        super().__init__()
 
         # Directory where all the sprites will be held
-        # This must include up, down, left, right in both idle and walking positions
-        # TODO: Implement other movement types
         self.sprite_dir = sprite_dir
 
         # We can preload the cache in for duplicated characters or just create a new one
@@ -56,7 +53,6 @@ class Character(Entity):
         self.animate()
 
     def animate(self):
-
         # Just determine which frame of which direction to use as current image
         if self.x_speed < 0:
             self.image = self.cache.get_image("left_" + str(self.current_anim_frame))
@@ -67,8 +63,7 @@ class Character(Entity):
         elif self.y_speed > 0:
             self.image = self.cache.get_image("down_" + str(self.current_anim_frame))
 
-        # Because there is such a low frame rate in the animations, it is handy to have a system inplace
-        # to create a pause between frames
+        # Create a pause between frames
         self.current_frame_wait += 1
         if self.current_frame_wait >= self.frame_wait:
             # Frame switch

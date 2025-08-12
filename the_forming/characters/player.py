@@ -1,11 +1,9 @@
-from Characters.Character import Character
+from the_forming.characters.character import Character
 
 
 class Player(Character):
-
     def __init__(self, start_x, start_y, sprite_dir, width, height, frames, camera, cache=None):
         super().__init__(start_x, start_y, sprite_dir, width, height, frames, cache)
-
         self.camera = camera
 
     def update(self, up, down, left, right, obstacles):
